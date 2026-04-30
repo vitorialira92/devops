@@ -1,6 +1,8 @@
 
 # HeatLink (Sem Docker)
 
+Acesse o PDF Trabalho 1 - Devops.pdf para mais detalhes.
+
 ## Visão Geral
 
 O **HeatLink** é uma aplicação web para verificação de disponibilidade de URLs.
