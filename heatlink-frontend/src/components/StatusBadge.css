@@ -1,0 +1,53 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  border: 2px solid;
+  background: #ffe4ef;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+  image-rendering: pixelated;
+  cursor: default;
+}
+
+.status-badge svg {
+  width: 14px;
+  height: 14px;
+}
+
+.status-label {
+  letter-spacing: 0.5px;
+}
+
+.status-latency {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-left: 4px;
+}
+
+.status-fast {
+  border-color: #22c55e;
+  color: #14532d;
+  background: #d1fae5;
+}
+
+.status-slow {
+  border-color: #f59e0b;
+  color: #78350f;
+  background: #fef3c7;
+}
+
+.status-down {
+  border-color: #ef4444;
+  color: #7f1d1d;
+  background: #fee2e2;
+}
+
+.status-unknown {
+  border-color: #6b7280;
+  color: #374151;
+  background: #f3f4f6;
+}

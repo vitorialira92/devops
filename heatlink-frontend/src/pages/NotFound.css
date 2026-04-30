@@ -1,0 +1,136 @@
+.not-found-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+    padding: 1rem;
+}
+
+.not-found-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.not-found-card {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+    animation: slideUp 0.5s ease-out;
+}
+
+.error-icon {
+    font-size: 5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #E85D8F 0%, #D63D7B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+}
+
+.error-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.error-description {
+    font-size: 1rem;
+    color: #666666;
+    margin: 0;
+    line-height: 1.6;
+    max-width: 400px;
+}
+
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.action-button.primary {
+    background: linear-gradient(135deg, #E85D8F 0%, #D63D7B 100%);
+    color: white;
+}
+
+.action-button.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(232, 93, 143, 0.3);
+}
+
+.action-button.secondary {
+    background: rgba(240, 212, 224, 0.4);
+    color: #E85D8F;
+    border: 1px solid rgba(232, 93, 143, 0.3);
+}
+
+.action-button.secondary:hover {
+    background: rgba(240, 212, 224, 0.6);
+    border-color: rgba(232, 93, 143, 0.5);
+    transform: translateY(-2px);
+}
+
+.action-button:active {
+    transform: translateY(0);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .not-found-card {
+        padding: 2rem 1.5rem;
+        gap: 1.25rem;
+    }
+
+    .error-icon {
+        font-size: 3.5rem;
+    }
+
+    .error-title {
+        font-size: 1.5rem;
+    }
+
+    .error-description {
+        font-size: 0.9rem;
+    }
+
+    .error-actions {
+        gap: 0.75rem;
+    }
+
+    .action-button {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}

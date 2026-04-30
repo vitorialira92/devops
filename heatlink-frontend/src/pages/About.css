@@ -1,0 +1,378 @@
+.about-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+}
+
+.about-main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+.about-hero {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInDown 0.6s ease-out;
+}
+
+.about-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    letter-spacing: -1px;
+    margin: 0 0 1rem 0;
+}
+
+.about-subtitle {
+    font-size: 1.1rem;
+    color: #666666;
+    margin: 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.project-info {
+    margin-bottom: 3rem;
+    animation: slideUp 0.5s ease-out 0.1s both;
+}
+
+.info-card {
+    padding: 2rem;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin: 0 0 1rem 0;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #666666;
+    line-height: 1.8;
+    margin: 0 0 1rem 0;
+}
+
+.card-text:last-child {
+    margin-bottom: 0;
+}
+
+.technologies-section {
+    margin-bottom: 3rem;
+    animation: slideUp 0.5s ease-out 0.2s both;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    text-align: center;
+    margin: 0 0 2rem 0;
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.tech-card {
+    padding: 1.5rem;
+}
+
+.tech-category {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #E85D8F;
+    margin: 0 0 1rem 0;
+}
+
+.tech-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.tech-list li {
+    font-size: 0.95rem;
+    color: #1A1A1A;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.tech-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: #E85D8F;
+    font-weight: bold;
+}
+
+.developer-section {
+    margin-bottom: 3rem;
+    animation: slideUp 0.5s ease-out 0.3s both;
+}
+
+.developer-card {
+    padding: 2rem;
+}
+
+.developer-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.developer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.developer-name {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.developer-role {
+    font-size: 1.1rem;
+    color: #E85D8F;
+    font-weight: 600;
+    margin: 0;
+}
+
+.developer-bio {
+    font-size: 0.95rem;
+    color: #666666;
+    line-height: 1.8;
+    margin: 0;
+}
+
+.developer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.links-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.links-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.link-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, rgba(232, 93, 143, 0.1) 0%, rgba(240, 212, 224, 0.1) 100%);
+    border: 1px solid rgba(232, 93, 143, 0.3);
+    border-radius: 0.75rem;
+    text-decoration: none;
+    color: #E85D8F;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.link-button:hover {
+    background: linear-gradient(135deg, rgba(232, 93, 143, 0.2) 0%, rgba(240, 212, 224, 0.2) 100%);
+    border-color: rgba(232, 93, 143, 0.5);
+    transform: translateX(4px);
+}
+
+.link-button svg {
+    flex-shrink: 0;
+}
+
+.features-section {
+    margin-bottom: 3rem;
+    animation: slideUp 0.5s ease-out 0.4s both;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.feature-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.feature-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.feature-description {
+    font-size: 0.9rem;
+    color: #666666;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.footer-info {
+    animation: slideUp 0.5s ease-out 0.5s both;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .about-main {
+        padding: 2rem 1rem;
+    }
+
+    .about-title {
+        font-size: 1.75rem;
+    }
+
+    .about-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .tech-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .developer-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .about-main {
+        padding: 1.5rem 1rem;
+    }
+
+    .about-title {
+        font-size: 1.5rem;
+    }
+
+    .about-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .info-card {
+        padding: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .tech-card {
+        padding: 1rem;
+    }
+
+    .tech-category {
+        font-size: 1.1rem;
+    }
+
+    .tech-list li {
+        font-size: 0.85rem;
+    }
+
+    .developer-card {
+        padding: 1rem;
+    }
+
+    .developer-name {
+        font-size: 1.5rem;
+    }
+
+    .developer-role {
+        font-size: 1rem;
+    }
+
+    .developer-bio {
+        font-size: 0.85rem;
+    }
+
+    .link-button {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+    }
+
+    .feature-title {
+        font-size: 1rem;
+    }
+
+    .feature-description {
+        font-size: 0.85rem;
+    }
+}
