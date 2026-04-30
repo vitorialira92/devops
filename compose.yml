@@ -1,0 +1,88 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: heatlink-postgres
+    environment:
+      POSTGRES_DB: heatlink
+      POSTGRES_USER: heatlink
+      POSTGRES_PASSWORD: heatlink
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - heatlink-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U heatlink"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: heatlink-redis
+    networks:
+      - heatlink-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./heatlink.backend
+    container_name: heatlink-api
+    environment:
+      SPRING_PROFILES_ACTIVE: api
+      DB_HOST: postgres
+      DB_NAME: heatlink
+      DB_USER: heatlink
+      DB_PASS: heatlink
+      REDIS_HOST: redis
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - heatlink-net
+
+  worker:
+    build:
+      context: ./heatlink.backend
+    container_name: heatlink-worker
+    environment:
+      SPRING_PROFILES_ACTIVE: worker
+      DB_HOST: postgres
+      DB_NAME: heatlink
+      DB_USER: heatlink
+      DB_PASS: heatlink
+      REDIS_HOST: redis
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+    networks:
+      - heatlink-net
+  
+  frontend:
+    build:
+      context: ./heatlink-frontend
+    container_name: heatlink-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - heatlink-net
+
+volumes:
+  postgres-data:
+
+networks:
+  heatlink-net:
+    driver: bridge
