@@ -1,0 +1,23 @@
+FROM ubuntu:latest
+LABEL authors="vitoria"
+
+# --- Stage 1: build ---
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+
+WORKDIR /app
+
+COPY pom.xml .
+RUN mvn dependency:go-offline -q
+
+COPY src ./src
+RUN mvn package -DskipTests -q
+
+# --- Stage 2: runtime ---
+FROM eclipse-temurin:21-jre-jammy
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
+# SPRING_PROFILES_ACTIVE é definido no docker-compose (api ou worker)
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,7 +1,8 @@
 
-# HeatLink (Sem Docker)
+# HeatLink (Com Docker)
 
-Acesse o PDF Trabalho 1 - Devops.pdf para mais detalhes.
+Acesse o PDF Trabalho 1 - Devops.pdf na branch master para mais detalhes.
+
 
 ## Visão Geral
 
@@ -18,36 +19,21 @@ Fluxo da aplicação:
 
 Tecnologias utilizadas:
 
-- Java + Spring Boot  
-- Redis  
-- PostgreSQL  
-- Node.js (frontend)  
+- Redis → cache e fila  
+- PostgreSQL → persistência  
+- Spring Boot → backend (API + worker)  
+- React + Nginx → frontend  
 
 ---
 
 ## Pré-requisitos
 
-- Java 21  
-- Maven 3.9+  
-- Node.js 18+  
-- npm 9+  
-- PostgreSQL 15  
-- Redis 7  
-- Git  
+- Docker Engine 24+
+- Docker Compose v2+
+- Git
 
 ---
 
-## Configurar banco de dados
-
-```sql
-CREATE USER heatlink WITH PASSWORD 'heatlink';
-CREATE DATABASE heatlink OWNER heatlink;
-```
-## Verificar Redis
-```
-redis-cli ping
-```
-Deve retornar PONG
 ## Clonar projeto
 ```
 git clone https://github.com/vitorialira92/devops.git
@@ -55,38 +41,39 @@ cd devops
 git checkout master
 ```
 
-## Rodar backend
+## Estrutura esperada
 
 ```
-cd heatlink.backend
-mvn clean package -DskipTests
+devops/
+├── compose.yml
+├── heatlink.backend/
+└── heatlink-frontend/
 ```
-### Iniciar API
+## Subir a aplicação
 ```
-java -Dspring.profiles.active=api -jar target/heatlink.backend-0.0.1-SNAPSHOT.jar
+docker compose up --build
 ```
-### Iniciar Worker (em outro terminal)
-```
-java -Dspring.profiles.active=worker -jar target/heatlink.backend-0.0.1-SNAPSHOT.jar
-```
-### Acessos
-http://localhost:8080
+## Acessos
+Frontend: http://localhost:3000
+
+API: http://localhost:8080
+
 Swagger: http://localhost:8080/swagger-ui/index.html#/
 
-## Rodar frontend
-Em um terceiro terminal:
+## Verificar containers
+
 ```
-cd heatlink-frontend
-npm install
-npm run dev
+docker compose ps
 ```
 
-### Acesso
-http://localhost:5173
+## Parar a aplicação
+```
+docker compose down
+```
 
 ## Observações:
-- Redis precisa estar rodando antes da API
-- PostgreSQL deve estar configurado corretamente
-- API e Worker devem rodar simultaneamente
-- Frontend depende da API ativa
+- Cache padrão: ~30 segundos
+- Worker roda separado da API
+- Redis atua como fila e cache
+- PostgreSQL mantém histórico completo
 
