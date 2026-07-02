@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.global.redis.name }}
+  labels:
+    run: {{ .Values.global.redis.name }}
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP
+  selector:
+    app: {{ .Values.global.redis.name }}

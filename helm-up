@@ -1,0 +1,60 @@
+#!/bin/bash
+###############################################################################
+# helm-up
+#
+# Sobe a aplicacao HeatLink no Minikube usando o Helm Chart (heatlink-chart).
+#
+# Uso:
+#   ./helm-up            # apenas instala o chart (imagens ja construidas/carregadas)
+#   ./helm-up -i         # inicializa o Minikube (ingress/dashboard) e depois instala
+#   ./helm-up -b         # faz o build+load da imagem do backend/worker antes de instalar
+#   ./helm-up -f         # faz o build+load da imagem do frontend antes de instalar
+#   ./helm-up -i -b -f   # tudo de uma vez (primeira execucao)
+###############################################################################
+
+DOCKER_USER="vitoriatenorio"
+API_IMAGE="${DOCKER_USER}/heatlink-api:latest"
+FRONT_IMAGE="${DOCKER_USER}/heatlink-frontend:latest"
+
+load_image() {
+    echo "Loading $1"
+    minikube image load "$1"
+    echo "Loaded $1"
+}
+
+build_backend_image() {
+    docker build -t "${API_IMAGE}" ./heatlink.backend
+    load_image "${API_IMAGE}"
+}
+
+build_frontend_image() {
+    docker build -t "${FRONT_IMAGE}" ./heatlink-frontend
+    load_image "${FRONT_IMAGE}"
+}
+
+init_minikube() {
+    minikube start
+
+    minikube addons enable ingress
+
+    minikube addons enable dashboard
+    minikube addons enable metrics-server
+    minikube dashboard &
+}
+
+while getopts ":ibf" option; do
+   case $option in
+      i) init_minikube
+         load_image postgres:16-alpine
+         load_image redis:7-alpine
+         ;;
+      b) build_backend_image ;;
+      f) build_frontend_image ;;
+   esac
+done
+
+helm install heatlink heatlink-chart
+
+echo ""
+echo "Aplicacao instalada. Verifique os pods com: kubectl get pods"
+echo "Próximo passo é mapear 'k8s.local' no /etc/hosts para o IP do 'minikube ip'."

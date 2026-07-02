@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heatlink-postgres
+  labels:
+    app: heatlink-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: heatlink-postgres
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: heatlink-postgres
+    spec:
+      containers:
+        - name: heatlink-postgres
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: heatlink-postgres-secret
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: heatlink-postgres-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: heatlink-postgres-secret
+                  key: POSTGRES_PASSWORD
+            # PGDATA em subdiretorio evita conflito com lost+found do volume
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "heatlink"]
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+          volumeMounts:
+            - name: heatlink-postgres-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: heatlink-postgres-storage
+          persistentVolumeClaim:
+            claimName: heatlink-postgres-pv-claim

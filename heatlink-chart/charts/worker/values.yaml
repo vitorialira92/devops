@@ -1,0 +1,6 @@
+replicaCount: 1
+
+image:
+  repository: vitoriatenorio/heatlink-api
+  tag: "latest"
+  pullPolicy: IfNotPresent

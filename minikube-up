@@ -1,0 +1,96 @@
+#!/bin/bash
+###############################################################################
+# minikube-up
+#
+# Sobe a aplicacao HeatLink no Minikube usando os manifestos "crus" da
+# pasta K8s/ (sem Helm), com kubectl. Util para entender/depurar cada objeto
+# individualmente. Para a implantacao automatizada, prefira o ./helm-up.
+#
+# Uso:
+#   ./minikube-up            # aplica todos os manifestos (imagens ja carregadas)
+#   ./minikube-up -i         # inicializa o Minikube (ingress/dashboard) antes
+#   ./minikube-up -b         # build+load da imagem backend/worker antes
+#   ./minikube-up -f         # build+load da imagem frontend antes
+#   ./minikube-up -i -b -f   # tudo de uma vez (primeira execucao)
+###############################################################################
+
+DOCKER_USER="vitoriatenorio"
+API_IMAGE="${DOCKER_USER}/heatlink-api:latest"
+FRONT_IMAGE="${DOCKER_USER}/heatlink-frontend:latest"
+
+load_image() {
+    echo "Loading $1"
+    minikube image load "$1"
+    echo "Loaded $1"
+}
+
+build_backend_image() {
+    docker build -t "${API_IMAGE}" ./heatlink.backend
+    load_image "${API_IMAGE}"
+}
+
+build_frontend_image() {
+    docker build -t "${FRONT_IMAGE}" ./heatlink-frontend
+    load_image "${FRONT_IMAGE}"
+}
+
+init_minikube() {
+    minikube start
+    minikube addons enable ingress
+    minikube addons enable dashboard
+    minikube addons enable metrics-server
+    minikube dashboard &
+}
+
+while getopts ":ibf" option; do
+   case $option in
+      i) init_minikube
+         load_image postgres:16-alpine
+         load_image redis:7-alpine
+         ;;
+      b) build_backend_image ;;
+      f) build_frontend_image ;;
+   esac
+done
+
+# 1. Banco de dados (PostgreSQL)
+cd K8s/postgres
+kubectl apply -f secret.yaml
+kubectl apply -f pv.yaml
+kubectl apply -f pvc.yaml
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+cd ../..
+
+# 2. Redis (cache e fila)
+cd K8s/redis
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+cd ../..
+
+# 3. API (backend REST)
+cd K8s/api
+kubectl apply -f configmap.yaml
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+cd ../..
+
+# 4. Worker (consumidor da fila)
+cd K8s/worker
+kubectl apply -f deployment.yaml
+cd ../..
+
+# 5. Frontend (React + Nginx)
+cd K8s/frontend
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+cd ../..
+
+# 6. Ingress (publicacao em k8s.local)
+cd K8s
+kubectl apply -f ingress.yaml
+cd ..
+
+echo ""
+echo "Aplicacao aplicada. Verifique os pods com: kubectl get pods"
+echo "O próximo passo é mapear 'k8s.local' no /etc/hosts para o IP do 'minikube ip'."

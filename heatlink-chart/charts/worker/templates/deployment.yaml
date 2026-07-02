@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.global.worker.name }}
+  labels:
+    app: {{ .Values.global.worker.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.global.worker.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.worker.name }}
+    spec:
+      containers:
+        - name: {{ .Values.global.worker.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "worker"
+            - name: DB_HOST
+              value: {{ .Values.global.postgres.name | quote }}
+            - name: DB_NAME
+              value: {{ .Values.global.postgres.database | quote }}
+            - name: REDIS_HOST
+              value: {{ .Values.global.redis.name | quote }}
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgres.name }}-secret
+                  key: POSTGRES_USER
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgres.name }}-secret
+                  key: POSTGRES_PASSWORD
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"

@@ -1,0 +1,12 @@
+global:
+  postgres:
+    name: heatlink-postgres
+    database: heatlink
+  redis:
+    name: heatlink-redis
+  api:
+    name: api
+  worker:
+    name: worker
+  frontend:
+    name: frontend

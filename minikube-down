@@ -1,0 +1,38 @@
+#!/bin/bash
+
+cd K8s
+kubectl delete -f ingress.yaml
+cd ..
+
+# 5. Frontend
+cd K8s/frontend
+kubectl delete -f deployment.yaml
+kubectl delete -f service.yaml
+cd ../..
+
+# 4. Worker
+cd K8s/worker
+kubectl delete -f deployment.yaml
+cd ../..
+
+# 3. API
+cd K8s/api
+kubectl delete -f configmap.yaml
+kubectl delete -f deployment.yaml
+kubectl delete -f service.yaml
+cd ../..
+
+# 2. Redis
+cd K8s/redis
+kubectl delete -f deployment.yaml
+kubectl delete -f service.yaml
+cd ../..
+
+# 1. Banco de dados (PostgreSQL)
+cd K8s/postgres
+kubectl delete -f deployment.yaml
+kubectl delete -f service.yaml
+kubectl delete -f secret.yaml
+kubectl delete -f pvc.yaml
+kubectl delete pv heatlink-postgres-pv-volume
+cd ../..

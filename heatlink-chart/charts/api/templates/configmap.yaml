@@ -1,0 +1,9 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Values.global.api.name }}-configmap
+data:
+  SPRING_PROFILES_ACTIVE: "api"
+  DB_HOST: {{ .Values.global.postgres.name | quote }}
+  DB_NAME: {{ .Values.global.postgres.database | quote }}
+  REDIS_HOST: {{ .Values.global.redis.name | quote }}
