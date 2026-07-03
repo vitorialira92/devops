@@ -1,79 +1,113 @@
 
-# HeatLink (Com Docker)
+# HeatLink no Kubernetes (Minikube + Helm)
 
-Acesse o PDF Trabalho 1 - Devops.pdf na branch master para mais detalhes.
+Acesse o PDF Trabalho 2 - Devops.pdf para mais detalhes.
 
+## O que é a aplicação
 
-## Visão Geral
+O HeatLink é uma aplicação web para **verificação de disponibilidade de URLs**.
+O fluxo é: o usuário envia uma URL, a API verifica o cache no Redis, e se não
+houver resultado a URL é colocada em uma fila. Um Worker consome essa fila,
+testa a URL e grava o resultado no PostgreSQL. O histórico e o ranking ficam
+disponíveis para consulta.
 
-O **HeatLink** é uma aplicação web para verificação de disponibilidade de URLs.
+São **cinco componentes**:
 
-Fluxo da aplicação:
+1. **postgres** - banco de dados PostgreSQL (persistência do histórico/ranking).
+2. **redis** - cache e fila de mensagens.
+3. **api** - backend Spring Boot que expõe a API REST (perfil `api`).
+4. **worker** - mesmo backend Spring Boot rodando como consumidor da fila (perfil `worker`).
+5. **frontend** - aplicação React servida pelo Nginx, que também faz proxy de `/api` para o serviço `api`.
 
-1. Usuário envia uma URL  
-2. API verifica cache no Redis  
-3. Se houver cache → retorna resultado  
-4. Caso contrário → URL vai para fila  
-5. Worker processa e salva no PostgreSQL  
-6. Histórico e ranking ficam disponíveis para consulta  
+O backend e o worker usam a **mesma imagem Docker**; o que muda é apenas a
+variável de ambiente `SPRING_PROFILES_ACTIVE` (`api` ou `worker`).
 
-Tecnologias utilizadas:
+---
 
-- Redis → cache e fila  
-- PostgreSQL → persistência  
-- Spring Boot → backend (API + worker)  
-- React + Nginx → frontend  
+## Imagens no Docker Hub
+
+- `vitoriatenorio/heatlink-api` (backend e worker)
+- `vitoriatenorio/heatlink-frontend` (frontend)
 
 ---
 
 ## Pré-requisitos
 
-- Docker Engine 24+
-- Docker Compose v2+
-- Git
+- Docker
+- Minikube
+- kubectl
+- Helm 3
 
 ---
 
-## Clonar projeto
-```
-git clone https://github.com/vitorialira92/devops.git
-cd devops
-git checkout master
+## Como executar (caminho recomendado: Helm)
+
+```bash
+# 1. Suba o Minikube, habilite o Ingress e faça build+load das duas imagens.
+#    (-i inicializa o cluster, -b faz o backend, -f faz o frontend)
+./helm-up -i -b -f
+
+# 2. Descubra o IP do cluster
+minikube ip
+# ex.: 192.168.49.2
+
+# 3. Mapeie o host k8s.local para esse IP no seu /etc/hosts
+echo "192.168.49.2 k8s.local" | sudo tee -a /etc/hosts
+
+# 4. Acesse no navegador
+#    http://k8s.local
 ```
 
-## Estrutura esperada
+Nas próximas execuções, se as imagens já estiverem carregadas, basta `./helm-up`.
 
-```
-devops/
-├── compose.yml
-├── heatlink.backend/
-└── heatlink-frontend/
-```
-## Subir a aplicação
-```
-docker compose up --build
-```
-## Acessos
-Frontend: http://localhost:3000
+Para remover tudo:
 
-API: http://localhost:8080
-
-Swagger: http://localhost:8080/swagger-ui/index.html#/
-
-## Verificar containers
-
-```
-docker compose ps
+```bash
+./helm-down
 ```
 
-## Parar a aplicação
-```
-docker compose down
+---
+
+## Alternativa: implantação com manifestos crus (sem Helm)
+
+Os mesmos objetos estão descritos individualmente na pasta `K8s/`, e podem ser
+aplicados com `kubectl` através dos scripts:
+
+```bash
+./minikube-up -i -b -f   # sobe tudo
+./minikube-down          # remove tudo
 ```
 
-## Observações:
-- Cache padrão: ~30 segundos
-- Worker roda separado da API
-- Redis atua como fila e cache
-- PostgreSQL mantém histórico completo
+---
 
+## Estrutura do repositório
+
+```
+.
+├── build-images.sh          # build/push/load das imagens Docker
+├── helm-up / helm-down      # sobe/remove a aplicação via Helm (recomendado)
+├── minikube-up / minikube-down  # sobe/remove via manifestos crus (kubectl)
+├── compose.yml              # Trabalho 1 (Docker Compose) - referência
+├── heatlink.backend/        # código do backend/worker + Dockerfile
+├── heatlink-frontend/       # código do frontend + Dockerfile + nginx.conf
+├── K8s/                     # manifestos Kubernetes "crus" (documentação/depuração)
+│   ├── postgres/  (secret, pv, pvc, deployment, service)
+│   ├── redis/     (deployment, service)
+│   ├── api/       (configmap, deployment, service)
+│   ├── worker/    (deployment)
+│   ├── frontend/  (deployment, service)
+│   └── ingress.yaml
+└── heatlink-chart/          # Helm Chart (umbrella + 5 subcharts)
+    ├── Chart.yaml
+    ├── values.yaml
+    ├── templates/ingress.yaml
+    └── charts/
+        ├── postgres/  ├── redis/  ├── api/  ├── worker/  └── frontend/
+```
+
+---
+
+## Documentação completa
+
+O arquivo **`Trabalho 2 - DevOps.pdf`** descreve em detalhes a aplicação,
+o roteiro de testes e todos os artefatos Kubernetes utilizados.
